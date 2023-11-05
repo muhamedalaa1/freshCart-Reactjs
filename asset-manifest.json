@@ -1,0 +1,40 @@
+{
+  "files": {
+    "main.css": "/freshCart-Reactjs/static/css/main.abbd2705.css",
+    "main.js": "/freshCart-Reactjs/static/js/main.2852d12b.js",
+    "static/js/787.bd02f72e.chunk.js": "/freshCart-Reactjs/static/js/787.bd02f72e.chunk.js",
+    "static/media/slider-2.jpeg": "/freshCart-Reactjs/static/media/slider-2.92200ddb54f84e0e8c71.jpeg",
+    "static/media/fa-solid-900.ttf": "/freshCart-Reactjs/static/media/fa-solid-900.d75e3fd1eb12e9bd6655.ttf",
+    "static/media/slider-image-1.jpeg": "/freshCart-Reactjs/static/media/slider-image-1.3c3940ee0f1c3b17ff9a.jpeg",
+    "static/media/grocery-banner.png": "/freshCart-Reactjs/static/media/grocery-banner.2c56649c9cbe2e19b86f.png",
+    "static/media/fa-brands-400.ttf": "/freshCart-Reactjs/static/media/fa-brands-400.016b4a6cdced82ab3aa1.ttf",
+    "static/media/slider-image-3.jpeg": "/freshCart-Reactjs/static/media/slider-image-3.7e5c9f7a513f6db6dd5e.jpeg",
+    "static/media/slider-image-2.jpeg": "/freshCart-Reactjs/static/media/slider-image-2.e510b0de8a4d96a1d5ad.jpeg",
+    "static/media/grocery-banner-2.jpeg": "/freshCart-Reactjs/static/media/grocery-banner-2.7a4a78a90acc3d5847cb.jpeg",
+    "static/media/fa-solid-900.woff2": "/freshCart-Reactjs/static/media/fa-solid-900.b6879d41b0852f01ed5b.woff2",
+    "static/media/fa-brands-400.woff2": "/freshCart-Reactjs/static/media/fa-brands-400.878f31251d960bd6266f.woff2",
+    "static/media/error.svg": "/freshCart-Reactjs/static/media/error.084f5f5b0eb10d3216cb7c939108e1f6.svg",
+    "static/media/fa-regular-400.ttf": "/freshCart-Reactjs/static/media/fa-regular-400.50701fbb8177c2dde530.ttf",
+    "static/media/fa-regular-400.woff2": "/freshCart-Reactjs/static/media/fa-regular-400.b041b1fa4fe241b23445.woff2",
+    "static/media/freshcart-logo.svg": "/freshCart-Reactjs/static/media/freshcart-logo.53f7a424c3aedc30a0fb46dc2278137c.svg",
+    "static/media/fa-v4compatibility.ttf": "/freshCart-Reactjs/static/media/fa-v4compatibility.c6a0c95b0a95c4553700.ttf",
+    "static/media/american-express.svg": "/freshCart-Reactjs/static/media/american-express.a606810f86fa881267abd10f4eb53b1e.svg",
+    "static/media/amazon.svg": "/freshCart-Reactjs/static/media/amazon.2b0195182e10b4c50adbe56828ba94a0.svg",
+    "static/media/mastercard.svg": "/freshCart-Reactjs/static/media/mastercard.269fc47f38fe93277719e71fb1f61bed.svg",
+    "static/media/fa-v4compatibility.woff2": "/freshCart-Reactjs/static/media/fa-v4compatibility.1bac2991f3dbfa237aec.woff2",
+    "static/media/paypal.svg": "/freshCart-Reactjs/static/media/paypal.725e3d7faaeccb909b53ccf47b0a8bdd.svg",
+    "static/media/slick.svg": "/freshCart-Reactjs/static/media/slick.2630a3e3eab21c607e21.svg",
+    "static/media/slick.eot": "/freshCart-Reactjs/static/media/slick.a4e97f5a2a64f0ab1323.eot",
+    "static/media/slick.ttf": "/freshCart-Reactjs/static/media/slick.c94f7671dcc99dce43e2.ttf",
+    "static/media/slick.woff": "/freshCart-Reactjs/static/media/slick.295183786cd8a1389865.woff",
+    "index.html": "/freshCart-Reactjs/index.html",
+    "static/media/google-play.svg": "/freshCart-Reactjs/static/media/google-play.2a9ec8522095ee55da6ad18b2cf3af0e.svg",
+    "main.abbd2705.css.map": "/freshCart-Reactjs/static/css/main.abbd2705.css.map",
+    "main.2852d12b.js.map": "/freshCart-Reactjs/static/js/main.2852d12b.js.map",
+    "787.bd02f72e.chunk.js.map": "/freshCart-Reactjs/static/js/787.bd02f72e.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.abbd2705.css",
+    "static/js/main.2852d12b.js"
+  ]
+}
