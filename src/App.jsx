@@ -18,6 +18,12 @@ import Cart from './components/Cart/Cart';
 import Payment from './components/Payment/Payment';
 import AllOrders from './components/AllOrders/AllOrders';
 import { Offline } from 'react-detect-offline';
+import Wishlist from './components/wishlist/Wishlist';
+import { WishlistContextProvider } from './context/wishlistContext';
+import ForgetPassword from './components/forgetpass/ForgetPassword';
+import ResetPassword from './components/resetPassword/ResetPassword';
+import NewPassword from './components/newPassword/NewPassword';
+
 
 
 
@@ -29,12 +35,17 @@ const myRouter = createHashRouter([
 {path:"products" ,element: <ProtectedRoute><Products /></ProtectedRoute>},
 
 {path:"cart" ,element: <ProtectedRoute><Cart /></ProtectedRoute>},
+{path:"wishlist" ,element: <ProtectedRoute><Wishlist /></ProtectedRoute>},
 
 {path:"payment" ,element: <ProtectedRoute><Payment /></ProtectedRoute>},
 {path:"allorders" ,element: <ProtectedRoute><AllOrders /></ProtectedRoute>},
 
 {path:"Register" ,element: <Register />},
 {path:"Login" ,element: <Login />},
+{path:"ForgetPassword" ,element: <ForgetPassword />},
+{path:"ResetPassword" ,element: <ResetPassword />},
+{path:"newPassword" ,element: <NewPassword />},
+
 {path:"Categories" ,element: <ProtectedRoute> <Categories /></ProtectedRoute>},
 {path:"Brands" ,element: <ProtectedRoute><Brands /></ProtectedRoute>},
 {path:"profile" ,element: <ProtectedRoute><Profile /></ProtectedRoute>},
@@ -54,7 +65,10 @@ function App() {
 
 
   <QueryClientProvider client={ clientQuery }>
+      
+      <WishlistContextProvider>
 
+      
       <CartContextProvider>
 
 
@@ -68,6 +82,10 @@ function App() {
 
 
       </CartContextProvider>
+
+      </WishlistContextProvider>
+
+      
       <ToastContainer />
   </QueryClientProvider>
   

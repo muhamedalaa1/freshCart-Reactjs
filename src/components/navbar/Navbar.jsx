@@ -3,13 +3,14 @@ import { Link, useNavigate } from 'react-router-dom'
 import logoImg from "../../images/freshcart-logo.svg"
 import { authContext } from '../../context/authContext';
 import { cartContext } from '../../context/cartContext';
+import { wishlistContext } from '../../context/wishlistContext';
 
 export default function Navbar() {
 
   const {numOfCartItems} = useContext(cartContext)
   const navigator =useNavigate()
   const {token , setToken} = useContext(authContext);
-  
+const {numOfWishlistItems} =  useContext(wishlistContext)
 
   function logingOut(){
 
@@ -79,6 +80,8 @@ export default function Navbar() {
         <li className="nav-item">
           <span onClick={ logingOut } style={   { cursor: "pointer" }   } className="nav-link">Logout</span>
         </li>
+
+
         <li className="nav-item">
           <Link className="nav-link position-relative" to={"/cart"}>
             
@@ -91,6 +94,22 @@ export default function Navbar() {
             
             </Link>
         </li>
+        
+        <li className="nav-item">
+          <Link className="nav-link position-relative" to={"/Wishlist"}>
+            
+            
+            <i class="fa-solid fa-heart"></i>
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
+                {numOfWishlistItems}
+                <span class="visually-hidden">unread messages</span>
+              </span>
+            
+            </Link>
+        </li>
+
+
+        
         </>:<>
         
         <li className="nav-item">

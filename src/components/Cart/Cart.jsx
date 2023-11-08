@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { cartContext } from '../../context/cartContext'
-import { ThreeDots } from 'react-loader-spinner';
+
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -164,7 +164,7 @@ theme: "light",
 
         </div>
         <div  className="col-sm-2" >
-          <h5>{product.price} X {product.count} = {product.price * product.count} EGP</h5>
+          <p className='fw-medium'>{product.price} X {product.count} = {product.price * product.count} EGP</p>
           <div className="col-sm-2 d-flex  align-items-center">
               <button onClick={()=> getupdate(product.product.id , product.count + 1  ) } className={`${styles.countButton} btn btn-outline-success`}>+</button>
             <p className='mx-2 mb-0'>{product.count}</p>

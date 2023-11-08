@@ -7,6 +7,7 @@ import { cartContext } from '../../context/cartContext'
  import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Helmet } from 'react-helmet'
+import { wishlistContext } from '../../context/wishlistContext'
 
 export default function ProductDetails() {
 
@@ -14,6 +15,7 @@ export default function ProductDetails() {
 
    const {addProductToCart} = useContext(cartContext)
     
+  const {addProductToWishlist} = useContext(wishlistContext)
 
     
     const {id} = useParams();
@@ -49,6 +51,34 @@ theme: "light",
       }
 
       setProductDetailsLoader(false)
+    }
+
+    async function addToWishlist(id){
+      const res = await addProductToWishlist(id);
+    
+     if(res.status === "success"){
+         toast.success(res.message , {
+position: "top-right",
+autoClose: 4000,
+hideProgressBar: true,
+closeOnClick: true,
+pauseOnHover: true,
+draggable: true,
+progress: undefined,
+theme: "light",
+});
+      }else{
+         toast.error(res.message , {
+position: "top-right",
+autoClose: 3500,
+hideProgressBar: true,
+closeOnClick: true,
+pauseOnHover: true,
+draggable: true,
+progress: undefined,
+theme: "light",
+});
+      }
     }
 
     
@@ -125,6 +155,28 @@ visible={true}
                 
                 
                 </button>
+
+
+               <button onClick={()=> addToWishlist(data.data.data.id)}  className='mt-2 w-100 main-bg-color p-3 rounded-2 border-0 text-white'>
+                
+                {productDetailsLoader? <div className='d-flex justify-content-center align-items-center'>
+                  <ThreeDots 
+            height="20" 
+            width="50" 
+            radius="9"
+            color="#fff" 
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}
+        />
+                </div>  :"+ ADD To wish" }
+
+                
+                
+                
+                </button>
+
             </div>
         </div>
     </div>

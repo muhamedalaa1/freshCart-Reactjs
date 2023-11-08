@@ -8,14 +8,17 @@ import { Link } from 'react-router-dom'
 import { cartContext } from '../../context/cartContext'
 import {  toast } from 'react-toastify'
 import { Helmet } from 'react-helmet'
+import { wishlistContext } from '../../context/wishlistContext'
 
 
 
 
 export default function Products() {
 
-  const { addProductToCart } = useContext(cartContext)
+  const { addProductToCart } = useContext(cartContext);
+  const {addProductToWishlist} = useContext(wishlistContext)
 
+  
   async function addProduct(id){
    
     const res = await addProductToCart(id)
@@ -43,6 +46,34 @@ theme: "light",
 });
       }
       
+  }
+
+  async function addToWishlist(id){
+    const res = await addProductToWishlist(id);
+    
+     if(res.status === "success"){
+         toast.success(res.message , {
+position: "top-right",
+autoClose: 4000,
+hideProgressBar: true,
+closeOnClick: true,
+pauseOnHover: true,
+draggable: true,
+progress: undefined,
+theme: "light",
+});
+      }else{
+         toast.error(res.message , {
+position: "top-right",
+autoClose: 3500,
+hideProgressBar: true,
+closeOnClick: true,
+pauseOnHover: true,
+draggable: true,
+progress: undefined,
+theme: "light",
+});
+      }
   }
 
   // using react query to get api
@@ -113,7 +144,7 @@ visible={true}
 
       {data?.data.data.map((product , index) => {return <div key={index} className="col-md-4  col-lg-3 ">
         
-            <div className="product ">
+            <div className="product position-relative">
               <Link to={`/productDetails/${product.id}`}>
 
           <img className='w-100'  src={product.imageCover} alt="product" />
@@ -127,6 +158,7 @@ visible={true}
               </Link>
 
               <button onClick={()=> addProduct(product.id)} className='mt-2   w-100 main-bg-color p-1 rounded-1 border-0 text-white'>+ ADD To Cart</button>
+              <button style={{right:"20px" , backgroundColor:"transparent"}} onClick={()=> addToWishlist(product.id)} className='mt-2   p-1 rounded-1 border-0  position-absolute top-0 '><i class="fa-regular fa-heart "></i></button>
 
              </div>
         
