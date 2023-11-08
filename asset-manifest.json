@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/freshCart-Reactjs/static/css/main.abbd2705.css",
-    "main.js": "/freshCart-Reactjs/static/js/main.2852d12b.js",
+    "main.js": "/freshCart-Reactjs/static/js/main.d603a7ac.js",
     "static/js/787.bd02f72e.chunk.js": "/freshCart-Reactjs/static/js/787.bd02f72e.chunk.js",
     "static/media/slider-2.jpeg": "/freshCart-Reactjs/static/media/slider-2.92200ddb54f84e0e8c71.jpeg",
     "static/media/fa-solid-900.ttf": "/freshCart-Reactjs/static/media/fa-solid-900.d75e3fd1eb12e9bd6655.ttf",
@@ -30,11 +30,11 @@
     "index.html": "/freshCart-Reactjs/index.html",
     "static/media/google-play.svg": "/freshCart-Reactjs/static/media/google-play.2a9ec8522095ee55da6ad18b2cf3af0e.svg",
     "main.abbd2705.css.map": "/freshCart-Reactjs/static/css/main.abbd2705.css.map",
-    "main.2852d12b.js.map": "/freshCart-Reactjs/static/js/main.2852d12b.js.map",
+    "main.d603a7ac.js.map": "/freshCart-Reactjs/static/js/main.d603a7ac.js.map",
     "787.bd02f72e.chunk.js.map": "/freshCart-Reactjs/static/js/787.bd02f72e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.abbd2705.css",
-    "static/js/main.2852d12b.js"
+    "static/js/main.d603a7ac.js"
   ]
 }
