@@ -61,6 +61,9 @@ theme: "light",
   if(wishlistProducts.length === 0){
 
     return <>
+    <Helmet>
+      <title>Wishlist</title>
+    </Helmet>
 
       <div className='container px-3 py-5'>
 
@@ -79,7 +82,11 @@ theme: "light",
 
   return <>
   <Helmet>
-      <title>Wishlist</title>t
+      <title>Wishlist</title>
+    <link rel="apple-touch-icon" href="../src/images/apple-touch-icon.png" />
+        <link rel="icon" href="../src/images/favicon.ico" />
+
+
     </Helmet>
   <div className="container">
     <div className="row">

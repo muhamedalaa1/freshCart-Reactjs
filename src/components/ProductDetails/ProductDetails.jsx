@@ -117,7 +117,10 @@ visible={true}
   
     <div className="container py-5">
       <Helmet>
-      <title>{data.data.data.title} </title>t
+      <title>Product details</title>
+    <link rel="apple-touch-icon" href="../src/images/apple-touch-icon.png" />
+        <link rel="icon" href="../src/images/favicon.ico" />
+
     </Helmet>
         <div  className="row  align-items-center  ">
             <div className="col-md-4">

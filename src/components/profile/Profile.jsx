@@ -41,7 +41,10 @@ visible={true}
 
   return <>
   <Helmet>
-      <title>Profile</title>t
+      <title>Profile</title>
+    <link rel="apple-touch-icon" href="../src/images/apple-touch-icon.png" />
+        <link rel="icon" href="../src/images/favicon.ico" />
+
     </Helmet>
   
     <div className="container vh-100 d-flex justify-content-center align-items-center">

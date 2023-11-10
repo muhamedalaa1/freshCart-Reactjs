@@ -122,7 +122,10 @@ visible={true}
 
   return <>
     <Helmet>
-      <title>All products</title>t
+      <title>All products</title>
+    <link rel="apple-touch-icon" href="../src/images/apple-touch-icon.png" />
+        <link rel="icon" href="../src/images/favicon.ico" />
+
     </Helmet>
     <div  className='container py-5'>
 

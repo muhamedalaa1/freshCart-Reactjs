@@ -39,7 +39,10 @@ visible={true}
    return <>
   
   <Helmet>
-      <title>Category</title>t
+      <title>Brands</title>
+    <link rel="apple-touch-icon" href="../src/images/apple-touch-icon.png" />
+        <link rel="icon" href="../src/images/favicon.ico" />
+
     </Helmet>
 
   <div className="container my-5">

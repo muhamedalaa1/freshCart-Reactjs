@@ -108,7 +108,10 @@ theme: "light",
   return <>
 
     <Helmet>
-      <title>Payment</title>t
+      <title>Payment</title>
+   <link rel="apple-touch-icon" href="../src/images/apple-touch-icon.png" />
+        <link rel="icon" href="../src/images/favicon.ico" />
+
     </Helmet>
 
     <div className="container vh-100 d-flex justify-content-center align-items-center ">

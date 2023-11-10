@@ -73,7 +73,10 @@ const formikObj = useFormik({
   return <>
 
   <Helmet>
-      <title>update password</title>t
+      <title>update password</title>
+    <link rel="apple-touch-icon" href="../src/images/apple-touch-icon.png" />
+        <link rel="icon" href="../src/images/favicon.ico" />
+
     </Helmet>
   
     <div className='w-75 m-auto py-5 shadow px-5 my-5 rounded-2'>

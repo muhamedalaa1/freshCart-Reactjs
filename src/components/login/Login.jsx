@@ -8,7 +8,7 @@ import { Helmet } from 'react-helmet';
 
 export default function Login() {
   
- const {token , setToken} = useContext(authContext)
+ const {  setToken} = useContext(authContext)
 
 
   let navigate = useNavigate()
@@ -63,7 +63,10 @@ const formikObj = useFormik({
   return <>
 
   <Helmet>
-      <title>Login</title>t
+      <title>Login</title>
+    <link rel="apple-touch-icon" href="../src/images/apple-touch-icon.png" />
+        <link rel="icon" href="../src/images/favicon.ico" />
+
     </Helmet>
   
     <div className='w-75 m-auto py-5 shadow px-5 my-5 rounded-2'>
