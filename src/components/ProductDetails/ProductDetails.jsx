@@ -12,6 +12,7 @@ import { wishlistContext } from '../../context/wishlistContext'
 export default function ProductDetails() {
 
   const [productDetailsLoader, setProductDetailsLoader] = useState(false)
+  const [productDetailsWishLoader, setProductDetailsWishLoader] = useState(false)
 
    const {addProductToCart} = useContext(cartContext)
     
@@ -54,9 +55,13 @@ theme: "light",
     }
 
     async function addToWishlist(id){
+      setProductDetailsWishLoader(true)
+
       const res = await addProductToWishlist(id);
     
      if(res.status === "success"){
+      setProductDetailsWishLoader(false)
+
          toast.success(res.message , {
 position: "top-right",
 autoClose: 4000,
@@ -159,7 +164,7 @@ visible={true}
 
                <button onClick={()=> addToWishlist(data.data.data.id)}  className='mt-2 w-100 main-bg-color p-3 rounded-2 border-0 text-white'>
                 
-                {productDetailsLoader? <div className='d-flex justify-content-center align-items-center'>
+                {productDetailsWishLoader? <div className='d-flex justify-content-center align-items-center'>
                   <ThreeDots 
             height="20" 
             width="50" 

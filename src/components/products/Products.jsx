@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { ThreeDots } from 'react-loader-spinner'
 import { useQuery } from 'react-query'
 import HomeSlider from '../homeSlider/HomeSlider'
@@ -16,8 +16,8 @@ import { wishlistContext } from '../../context/wishlistContext'
 export default function Products() {
 
   const { addProductToCart } = useContext(cartContext);
-  const {addProductToWishlist} = useContext(wishlistContext)
-
+  const {addProductToWishlist , wishlistStatus,setWishlistStatus } = useContext(wishlistContext)
+  // const [wishlistStatus, setWishlistStatus] = useState({})
   
   async function addProduct(id){
    
@@ -52,6 +52,7 @@ theme: "light",
     const res = await addProductToWishlist(id);
     
      if(res.status === "success"){
+      setWishlistStatus(prevStatus => ({...prevStatus , [id]:true}))
          toast.success(res.message , {
 position: "top-right",
 autoClose: 4000,
@@ -76,6 +77,7 @@ theme: "light",
       }
   }
 
+  
   // using react query to get api
 
   function getAllProducts(){
@@ -158,7 +160,7 @@ visible={true}
               </Link>
 
               <button onClick={()=> addProduct(product.id)} className='mt-2   w-100 main-bg-color p-1 rounded-1 border-0 text-white'>+ ADD To Cart</button>
-              <button style={{right:"20px" , backgroundColor:"transparent"}} onClick={()=> addToWishlist(product.id)} className='mt-2   p-1 rounded-1 border-0  position-absolute top-0 '><i class="fa-regular fa-heart "></i></button>
+              <button style={{right:"20px" , backgroundColor:"transparent" , color: wishlistStatus[product.id]? "red" : "black"}} onClick={()=> addToWishlist(product.id)} className='mt-2   p-1 rounded-1 border-0  position-absolute top-0 '><i class="fa-solid fa-heart"></i></button>
 
              </div>
         

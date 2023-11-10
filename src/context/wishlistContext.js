@@ -10,6 +10,7 @@ export const wishlistContext = createContext();
 export function WishlistContextProvider({ children }) {
   const [numOfWishlistItems, setNumOfWishlistItems] = useState(0);
   const [wishlistProducts, setWishlistProducts] = useState(null);
+  const [wishlistStatus, setWishlistStatus] = useState({})
 //   const [WishlistId, setWishlistId] = useState(null);
 
  
@@ -47,7 +48,10 @@ export function WishlistContextProvider({ children }) {
         { headers: { token: localStorage.getItem("tkn") } }
       );
       getUserWishlist();
-
+        setWishlistStatus((prevStatus) => ({
+          ...prevStatus,
+          [productId]: true,
+        }));
       return data;
     } catch (e) {
       console.log("error", e);
@@ -88,6 +92,8 @@ export function WishlistContextProvider({ children }) {
         // WishlistId,
         setWishlistProducts,
         setNumOfWishlistItems,
+        setWishlistStatus,
+        wishlistStatus,
       }}
     >
       {children}

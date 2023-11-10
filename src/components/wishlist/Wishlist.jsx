@@ -7,7 +7,7 @@ import { Helmet } from "react-helmet";
 
 export default function Wishlist() {
 
-  const {wishlistProducts , numOfWishlistItems , removeWishItem} = useContext(wishlistContext)
+  const {wishlistProducts , numOfWishlistItems , removeWishItem ,setWishlistStatus } = useContext(wishlistContext)
 
     async function removeItemFromWish(id){
 
@@ -16,6 +16,7 @@ export default function Wishlist() {
        console.log(res);
 
         if(res.status === "success"){
+          setWishlistStatus(prevStatus =>({...prevStatus,[id]:false}))
         toast.success("Deleted from Wishlist", {
 position: "top-right",
 autoClose: 4000,

@@ -84,7 +84,7 @@ const formikObj = useFormik({
       
       <input onBlur={formikObj.handleBlur} onChange={formikObj.handleChange}  value={formikObj.values.email} type="email" id='email' placeholder='E-mail' className='form-control mb-3'/>
       {formikObj.errors.email && formikObj.touched.email? <p className='alert alert-danger bg-transparent border-0 text-danger p-0'> {formikObj.errors.email} </p>  : "" }
-      <input onBlur={formikObj.handleBlur} onChange={formikObj.handleChange}  value={formikObj.values.newPassword} type="password" id='newPassword' placeholder='Password' className='form-control mb-3'/>
+      <input onBlur={formikObj.handleBlur} onChange={formikObj.handleChange}  value={formikObj.values.newPassword} type="password" id='newPassword' placeholder='new Password' className='form-control mb-3'/>
       {formikObj.errors.newPassword && formikObj.touched.newPassword? <p className='alert alert-danger bg-transparent border-0 text-danger p-0'> {formikObj.errors.newPassword} </p>  : "" }
       
       
