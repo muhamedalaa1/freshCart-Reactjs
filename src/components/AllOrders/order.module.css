@@ -41,6 +41,8 @@ table {
 	 text-align: center;
 }
  @media screen and (max-width: 35.5em) {
+
+	
 	 table {
 		 display: block;
 	}
@@ -55,7 +57,7 @@ table {
 		 padding: 8px 0;
 	}
 	 table tbody tr td {
-		 padding-left: 45%;
+		 /* padding-left: 45%; */
 		 margin-bottom: 12px;
 	}
 	 table tbody tr td:last-child {
@@ -68,21 +70,7 @@ table {
 		 left: 10px;
 		 top: 0;
 	}
-	 table tbody tr td:nth-child(1):before {
-		 content: "Code";
-	}
-	 table tbody tr td:nth-child(2):before {
-		 content: "Stock";
-	}
-	 table tbody tr td:nth-child(3):before {
-		 content: "Cap";
-	}
-	 table tbody tr td:nth-child(4):before {
-		 content: "Inch";
-	}
-	 table tbody tr td:nth-child(5):before {
-		 content: "Box Type";
-	}
+	 
 }
 
  blockquote {

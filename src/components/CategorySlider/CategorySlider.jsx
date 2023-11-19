@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { ThreeDots } from 'react-loader-spinner';
+import styles from "./category.module.css"
 
 export default function CategorySlider() {
 
@@ -57,13 +58,13 @@ visible={true}
   
     
   
-  <div className='my-5'>
+  <div className={`${styles.categorySlider}`}>
         
         <Slider {...settings}>
 
             {data?.data.data.map(function(category , index){return  <div className='mb-2' key={index}>
             <img style={{ width: "100%" , height: "200px" }} src={category.image} alt="" />
-            <p>{category.name}</p>
+            <p style={{ fontSize:"10px" , fontWeight:"bold" }} >{category.name}</p>
           </div>})}
 
         </Slider>

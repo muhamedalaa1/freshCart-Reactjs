@@ -130,11 +130,11 @@ visible={true}
     <div  className='container py-5'>
 
     <div className="row g-0 mb-4">
-      <div className="col-9">
+      <div className="col-md-9 col-sm-12 mb-5">
         <HomeSlider />
       </div>
 
-      <div className="col-3">
+      <div className="col-md-3 col-sm-12">
         <img style={{ width : "100%" , height : "250px" }}  src={require('../../images/grocery-banner.png')} alt="" />
         <img style={{ width : "100%" , height : "250px" }} src={require('../../images/grocery-banner-2.jpeg')} alt="" />
       </div>

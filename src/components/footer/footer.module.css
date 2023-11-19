@@ -1,0 +1,42 @@
+
+.payment{
+    display: flex;
+        align-items: center;
+    }
+    .getDeliveries{
+    display: flex;
+align-items: center;
+        
+
+    }
+    .googlePlay{
+        margin-left: 15px;
+        margin-top: 0;
+
+    }
+    .brandsMargins{
+        margin-right: 10px;
+    }
+
+@media (max-width: 576px) { 
+
+.payment{
+    display: flex;
+        flex-direction: column ;
+    }
+
+    .getDeliveries{
+    display: flex;
+
+        flex-direction: column ;
+
+    }
+    .googlePlay{
+        margin-left: 0;
+        margin-top: 15px;
+    }
+    .brandsMargins{
+        margin-right: 5px;
+    }
+
+ }

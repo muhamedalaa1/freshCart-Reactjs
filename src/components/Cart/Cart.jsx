@@ -148,7 +148,7 @@ theme: "light",
 
     </Helmet>
   
-  <div style={{backgroundColor:"#eee" }} className="container px-3 py-5 my-5">
+  <div  className="container px-3 py-5 my-5">
     <h2>Shop Cart </h2>
 
     

@@ -64,11 +64,11 @@ visible={true}
 
     </Helmet>
   
-  <div className="container my-5 py-5">
+  <div className="container my-5 py-5 overflow-x-auto">
 
     
 
-        <table>
+  <table>
     <thead>
       <tr>
         <th style={{width:"15%"}}>Product image</th>
@@ -109,10 +109,79 @@ visible={true}
         })}
     
   </table>
+
+
+
+
+
+
+{/* <table class="table">
+  <thead>
+    <tr>
+      
+      <th scope="col">Product image</th>
+      <th scope="col">Title</th>
+      <th scope="col">Price</th>
+      <th scope="col">Count</th>
+      <th scope="col">Total price</th>
+      <th scope="col">Phone</th>
+      <th scope="col">City</th>
+      <th scope="col">User email</th>
+      <th scope="col">Payment method</th>
+    </tr>
+  </thead>
+
+        {userAllOrders.map(function(order , index){
+        console.log(order);
+
+        
+        return <tbody key={index}>
+
+            {order.cartItems.map(function(item , idx){
+              console.log(item);
+                return <tr key={idx}>
+        
+        <td><img className='w-50' src={item.product.imageCover} alt="" /></td>
+        <td className='fw-bold'>{item.product.title.split(" ").slice(0,3).join(" ")}</td>
+        <td className='fw-bold'>{item.price} EGP</td>
+        <td className='fw-bold'>{item.count}</td>
+        <td className='fw-bold'>{item.price * item.count} EGP</td>
+        <td className='fw-bold'>{order.shippingAddress.phone} </td>
+        <td className='fw-bold'>{order.shippingAddress.city} </td>
+        <td className='fw-bold'>{order.user.email} </td>
+        <td className='fw-bold text-primary'>{order.paymentMethodType} </td>
+
+      </tr>
+            })}
+      
+    </tbody>
+        })}
+    
+  </table> */}
+
+
+
+
+
+
+
   </div>
   
 
+
+
+
+  {/* ==================================== */}
+
+
   
+
+  
+
+
+
+
+
 </>
 
   
