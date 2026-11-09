@@ -87,7 +87,7 @@ function App() {
       </WishlistContextProvider>
 
       
-      <ToastContainer position="top-right" autoClose={3000} newestOnTop closeOnClick pauseOnHover theme="light" />
+      <ToastContainer containerId="freshcart-notifications" position="top-right" autoClose={3500} newestOnTop closeOnClick pauseOnHover theme="light" />
   </QueryClientProvider>
   
   <Offline>
