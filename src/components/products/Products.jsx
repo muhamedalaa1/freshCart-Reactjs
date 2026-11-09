@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useContext, useMemo, useState } from 'react'
+import React, { useContext, useMemo, useState, useEffect } from 'react'
 import { ThreeDots } from 'react-loader-spinner'
 import { useQuery } from 'react-query'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 import { Helmet } from 'react-helmet'
 import { wishlistContext } from '../../context/wishlistContext'
 
+const INITIAL_PRODUCT_LIMIT = 8
 const notify = {
   success: message => toast.success(message, { containerId: 'freshcart-notifications' }),
   error: message => toast.error(message, { containerId: 'freshcart-notifications' }),
@@ -23,6 +24,7 @@ export default function Products() {
   const [maxPrice, setMaxPrice] = useState('')
   const [minRating, setMinRating] = useState('0')
   const [sortBy, setSortBy] = useState('recommended')
+  const [showAll, setShowAll] = useState(false)
 
   const categoryId = searchParams.get('category') || ''
   const brandId = searchParams.get('brand') || ''
@@ -64,6 +66,9 @@ export default function Products() {
     if (sortBy === 'name') result.sort((a, b) => a.title.localeCompare(b.title))
     return result
   }, [products, searchTerm, categoryId, brandId, minPrice, maxPrice, minRating, sortBy])
+
+  useEffect(() => setShowAll(false), [searchTerm, categoryId, brandId, minPrice, maxPrice, minRating, sortBy])
+  const visibleProducts = showAll ? filteredProducts : filteredProducts.slice(0, INITIAL_PRODUCT_LIMIT)
 
   function updateParam(key, value) {
     const next = new URLSearchParams(searchParams)
@@ -120,21 +125,21 @@ export default function Products() {
         </header>
 
         <section className="fc-filter-panel" aria-label="Product filters">
-          <div className="fc-filter-topline"><div><i className="fa-solid fa-sliders me-2" />Refine your search</div><button type="button" onClick={clearFilters}>Clear all filters <i className="fa-solid fa-rotate-left ms-1" /></button></div>
+          <div className="fc-filter-topline"><div><span className="fc-filter-icon"><i className="fa-solid fa-sliders" /></span><span><strong>Find exactly what you need</strong><small>Use the filters to narrow your collection</small></span></div><button type="button" onClick={clearFilters}><i className="fa-solid fa-rotate-left me-1" />Reset filters</button></div>
           <div className="fc-filter-grid">
             <label className="fc-filter-field fc-filter-search"><span>Search products</span><div><i className="fa-solid fa-magnifying-glass" /><input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Product, category or brand..." /></div></label>
             <label className="fc-filter-field"><span>Category</span><select value={categoryId} onChange={e => updateParam('category', e.target.value)}><option value="">All categories</option>{categories.map(category => <option key={category._id} value={category._id}>{category.name}</option>)}</select></label>
             <label className="fc-filter-field"><span>Brand</span><select value={brandId} onChange={e => updateParam('brand', e.target.value)}><option value="">All brands</option>{brands.map(brand => <option key={brand._id} value={brand._id}>{brand.name}</option>)}</select></label>
-            <div className="fc-filter-field"><span>Price range (EGP)</span><div className="fc-price-range"><input type="number" min="0" value={minPrice} onChange={e => setMinPrice(e.target.value)} placeholder="Min" aria-label="Minimum price" /><span>—</span><input type="number" min="0" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder="Max" aria-label="Maximum price" /></div></div>
-            <label className="fc-filter-field"><span>Minimum rating</span><select value={minRating} onChange={e => setMinRating(e.target.value)}><option value="0">Any rating</option><option value="3">3 stars & up</option><option value="4">4 stars & up</option><option value="4.5">4.5 stars & up</option></select></label>
-            <label className="fc-filter-field"><span>Sort by</span><select value={sortBy} onChange={e => setSortBy(e.target.value)}><option value="recommended">Recommended</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="rating">Top rated</option><option value="name">Name: A to Z</option></select></label>
+            <div className="fc-filter-field"><span>Price range <small>(EGP)</small></span><div className="fc-price-range"><input type="number" min="0" value={minPrice} onChange={e => setMinPrice(e.target.value)} placeholder="Min" aria-label="Minimum price" /><span>—</span><input type="number" min="0" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder="Max" aria-label="Maximum price" /></div></div>
+            <label className="fc-filter-field"><span>Customer rating</span><select value={minRating} onChange={e => setMinRating(e.target.value)}><option value="0">Any rating</option><option value="3">3 stars & up</option><option value="4">4 stars & up</option><option value="4.5">4.5 stars & up</option></select></label>
+            <label className="fc-filter-field"><span>Sort products</span><select value={sortBy} onChange={e => setSortBy(e.target.value)}><option value="recommended">Recommended</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="rating">Top rated</option><option value="name">Name: A to Z</option></select></label>
           </div>
           {(categoryId || brandId) && <div className="fc-active-filters"><span>Active filters:</span>{categoryId && <button type="button" onClick={() => updateParam('category', '')}>{categories.find(item => item._id === categoryId)?.name || 'Category'} <i className="fa-solid fa-xmark" /></button>}{brandId && <button type="button" onClick={() => updateParam('brand', '')}>{brands.find(item => item._id === brandId)?.name || 'Brand'} <i className="fa-solid fa-xmark" /></button>}</div>}
         </section>
 
-        <div className="fc-products-results-bar"><span>Showing <strong>{filteredProducts.length}</strong> matching products</span><Link to="/" className="fc-back-home"><i className="fa-solid fa-arrow-left me-2" />Back to home</Link></div>
+        <div className="fc-products-results-bar"><span>Showing <strong>{visibleProducts.length}</strong> of <strong>{filteredProducts.length}</strong> products</span><Link to="/" className="fc-back-home"><i className="fa-solid fa-arrow-left me-2" />Back to home</Link></div>
         <div className="row g-4">
-          {filteredProducts.map(product => <div key={product.id} className="col-6 col-md-4 col-lg-3">
+          {visibleProducts.map(product => <div key={product.id} className="col-6 col-md-4 col-lg-3">
             <article className="fc-product-card">
               <div className="fc-product-image-wrap">
                 <Link to={`/productDetails/${product.id}`}><img className="fc-product-image" src={product.imageCover} alt={product.title} loading="lazy" /></Link>
@@ -150,7 +155,8 @@ export default function Products() {
             </article>
           </div>)}
         </div>
-        {filteredProducts.length === 0 && <div className="fc-empty mt-4"><i className="fa-solid fa-filter mb-3" /><h4>No products match these filters</h4><p>Try changing your search or clearing some filters.</p><button type="button" onClick={clearFilters} className="fc-primary-btn">Clear filters</button></div>}
+        {filteredProducts.length === 0 && <div className="fc-empty mt-4"><i className="fa-solid fa-filter mb-3" /><h4>No products match these filters</h4><p>Try changing your search or clearing some filters.</p><button type="button" onClick={clearFilters} className="fc-primary-btn">Clear filters</button></div>
+        {filteredProducts.length > INITIAL_PRODUCT_LIMIT && <div className="fc-show-all-wrap"><button type="button" className="fc-show-all-btn" onClick={() => setShowAll(value => !value)}>{showAll ? 'Show fewer products' : `Show more products (${filteredProducts.length - INITIAL_PRODUCT_LIMIT} more)`} <i className={showAll ? 'fa-solid fa-chevron-up ms-2' : 'fa-solid fa-arrow-down ms-2'} /></button></div>}}
       </div>
     </main>
   </>
