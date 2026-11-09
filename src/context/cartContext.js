@@ -93,7 +93,8 @@ async function addProductToCart(productId) {
 
         return data;
       } catch (e) {
-        console.log("error", e);
+        console.error("Unable to add cart item", e);
+        return e.response?.data || { status: "error", message: e.message || "Couldn't add this product to your cart." };
       }
     }
 

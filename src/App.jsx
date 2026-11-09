@@ -2,6 +2,7 @@ import { RouterProvider, createBrowserRouter, createHashRouter } from 'react-rou
 import './App.css';
 import Layout from './components/layout/Layout';
 import Products from './components/products/Products';
+import Home from './components/home/Home';
 import Register from './components/register/Register';
 import Login from './components/login/Login';
 import Categories from './components/categories/Categories';
@@ -14,6 +15,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import ProductDetails from './components/ProductDetails/ProductDetails';
 import { CartContextProvider } from './context/cartContext';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Cart from './components/Cart/Cart';
 import Payment from './components/Payment/Payment';
 import AllOrders from './components/AllOrders/AllOrders';
@@ -31,7 +33,7 @@ const myRouter = createHashRouter([
 
 
 {path : "" , element : <Layout /> , children:[
-{index:true ,element: <ProtectedRoute><Products /></ProtectedRoute>},
+{index:true ,element: <ProtectedRoute><Home /></ProtectedRoute>},
 {path:"products" ,element: <ProtectedRoute><Products /></ProtectedRoute>},
 
 {path:"cart" ,element: <ProtectedRoute><Cart /></ProtectedRoute>},
@@ -86,7 +88,7 @@ function App() {
       </WishlistContextProvider>
 
       
-      <ToastContainer />
+      <ToastContainer containerId="freshcart-notifications" position="top-right" autoClose={3500} newestOnTop closeOnClick pauseOnHover theme="light" />
   </QueryClientProvider>
   
   <Offline>

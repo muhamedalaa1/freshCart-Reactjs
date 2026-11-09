@@ -1,176 +1,163 @@
 import axios from 'axios'
-import React, { useContext } from 'react'
+import React, { useContext, useMemo, useState, useEffect } from 'react'
 import { ThreeDots } from 'react-loader-spinner'
 import { useQuery } from 'react-query'
-import HomeSlider from '../homeSlider/HomeSlider'
-import CategorySlider from '../CategorySlider/CategorySlider'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { cartContext } from '../../context/cartContext'
-import {  toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 import { Helmet } from 'react-helmet'
 import { wishlistContext } from '../../context/wishlistContext'
 
-
-
+const INITIAL_PRODUCT_LIMIT = 8
+const notify = {
+  success: message => toast.success(message, { containerId: 'freshcart-notifications' }),
+  error: message => toast.error(message, { containerId: 'freshcart-notifications' }),
+  info: message => toast.info(message, { containerId: 'freshcart-notifications' }),
+}
 
 export default function Products() {
+  const { addProductToCart } = useContext(cartContext)
+  const { addProductToWishlist, removeWishItem, wishlistStatus } = useContext(wishlistContext)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [minPrice, setMinPrice] = useState('')
+  const [maxPrice, setMaxPrice] = useState('')
+  const [minRating, setMinRating] = useState('0')
+  const [sortBy, setSortBy] = useState('recommended')
+  const [showAll, setShowAll] = useState(false)
 
-  const { addProductToCart } = useContext(cartContext);
-  const {addProductToWishlist , wishlistStatus,setWishlistStatus } = useContext(wishlistContext)
-  // const [wishlistStatus, setWishlistStatus] = useState({})
-  
-  async function addProduct(id){
-   
-    const res = await addProductToCart(id)
-   if(res.status === "success"){
-         toast.success(res.message , {
-position: "top-right",
-autoClose: 4000,
-hideProgressBar: true,
-closeOnClick: true,
-pauseOnHover: true,
-draggable: true,
-progress: undefined,
-theme: "light",
-});
-      }else{
-         toast.error(res.message , {
-position: "top-right",
-autoClose: 3500,
-hideProgressBar: true,
-closeOnClick: true,
-pauseOnHover: true,
-draggable: true,
-progress: undefined,
-theme: "light",
-});
+  const categoryId = searchParams.get('category') || ''
+  const brandId = searchParams.get('brand') || ''
+
+  const { data, isLoading, isError } = useQuery('allProduct', () =>
+    axios.get('https://ecommerce.routemisr.com/api/v1/products')
+  )
+  const { data: categoriesData } = useQuery('allCategory', () =>
+    axios.get('https://ecommerce.routemisr.com/api/v1/categories')
+  )
+  const { data: brandsData } = useQuery('allBrands', () =>
+    axios.get('https://ecommerce.routemisr.com/api/v1/brands')
+  )
+
+  const products = data?.data?.data || []
+  const categories = categoriesData?.data?.data || []
+  const brands = brandsData?.data?.data || []
+
+  const filteredProducts = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase()
+    const result = products.filter(product => {
+      const title = product.title?.toLowerCase() || ''
+      const categoryName = product.category?.name?.toLowerCase() || ''
+      const brandName = product.brand?.name?.toLowerCase() || ''
+      const price = Number(product.price) || 0
+      const rating = Number(product.ratingsAverage) || 0
+      const matchesSearch = !term || title.includes(term) || categoryName.includes(term) || brandName.includes(term)
+      const matchesCategory = !categoryId || product.category?._id === categoryId
+      const matchesBrand = !brandId || product.brand?._id === brandId
+      const matchesMinPrice = minPrice === '' || price >= Number(minPrice)
+      const matchesMaxPrice = maxPrice === '' || price <= Number(maxPrice)
+      const matchesRating = rating >= Number(minRating)
+      return matchesSearch && matchesCategory && matchesBrand && matchesMinPrice && matchesMaxPrice && matchesRating
+    })
+
+    if (sortBy === 'price-low') result.sort((a, b) => a.price - b.price)
+    if (sortBy === 'price-high') result.sort((a, b) => b.price - a.price)
+    if (sortBy === 'rating') result.sort((a, b) => (b.ratingsAverage || 0) - (a.ratingsAverage || 0))
+    if (sortBy === 'name') result.sort((a, b) => a.title.localeCompare(b.title))
+    return result
+  }, [products, searchTerm, categoryId, brandId, minPrice, maxPrice, minRating, sortBy])
+
+  useEffect(() => setShowAll(false), [searchTerm, categoryId, brandId, minPrice, maxPrice, minRating, sortBy])
+  const visibleProducts = showAll ? filteredProducts : filteredProducts.slice(0, INITIAL_PRODUCT_LIMIT)
+
+  function updateParam(key, value) {
+    const next = new URLSearchParams(searchParams)
+    if (value) next.set(key, value)
+    else next.delete(key)
+    setSearchParams(next)
+  }
+
+  function clearFilters() {
+    setSearchTerm('')
+    setMinPrice('')
+    setMaxPrice('')
+    setMinRating('0')
+    setSortBy('recommended')
+    setSearchParams({})
+  }
+
+  async function addProduct(id) {
+    try {
+      const res = await addProductToCart(id)
+      if (res?.status === 'success') notify.success('Added to your cart')
+      else notify.error(res?.message || "Couldn't add this product to your cart")
+    } catch (error) {
+      notify.error(error?.response?.data?.message || "Couldn't add this product to your cart")
+    }
+  }
+
+  async function toggleWishlist(id) {
+    try {
+      if (wishlistStatus[id]) {
+        const res = await removeWishItem(id)
+        if (res?.status === 'success') notify.info('Removed from your wishlist')
+        else notify.error(res?.message || "Couldn't remove this product")
+        return
       }
-      
+      const res = await addProductToWishlist(id)
+      if (res?.status === 'success') notify.success('Added to your wishlist')
+      else notify.error(res?.message || "Couldn't add this product")
+    } catch (error) {
+      notify.error(error?.response?.data?.message || "Couldn't update your wishlist")
+    }
   }
 
-  async function addToWishlist(id){
-    const res = await addProductToWishlist(id);
-    
-     if(res.status === "success"){
-      setWishlistStatus(prevStatus => ({...prevStatus , [id]:true}))
-         toast.success(res.message , {
-position: "top-right",
-autoClose: 4000,
-hideProgressBar: true,
-closeOnClick: true,
-pauseOnHover: true,
-draggable: true,
-progress: undefined,
-theme: "light",
-});
-      }else{
-         toast.error(res.message , {
-position: "top-right",
-autoClose: 3500,
-hideProgressBar: true,
-closeOnClick: true,
-pauseOnHover: true,
-draggable: true,
-progress: undefined,
-theme: "light",
-});
-      }
-  }
-
-  
-  // using react query to get api
-
-  function getAllProducts(){
-
-
-    return axios.get("https://ecommerce.routemisr.com/api/v1/products")
-  }
-
-const {data , isLoading  } = useQuery("allProduct" , getAllProducts)
-
-
-
-  // without using react query to get api
-
-  // const [allProduct, setAllProduct] = useState(null)
-  // async function getProducts(){
-  //   const {data} = await axios.get("https://ecommerce.routemisr.com/api/v1/products")
-  //   setAllProduct(data.data)
-  // }
-  // useEffect(function(){
-  //   getProducts()
-  // },[])
-
-  if(isLoading){
-
-    return  <div className='vh-100 d-flex justify-content-center align-items-center'>
-
-  <ThreeDots
-height="80" 
-width="80" 
-radius="9"
-color="#4fa94d" 
-ariaLabel="three-dots-loading"
-wrapperStyle={{}}
-wrapperClassName=""
-visible={true}
- />
-
-  </div>
-
-  }
+  if (isLoading) return <div className="fc-loading"><ThreeDots height="70" width="70" color="#16834a" visible /></div>
+  if (isError) return <div className="container py-5"><div className="fc-empty"><h3>We couldn't load the products</h3><p>Please check your connection and try again.</p></div></div>
 
   return <>
-    <Helmet>
-      <title>All products</title>
-    <link rel="apple-touch-icon" href="../src/images/apple-touch-icon.png" />
-        <link rel="icon" href="../src/images/favicon.ico" />
+    <Helmet><title>All products & filters | FreshCart</title></Helmet>
+    <main className="fc-products-page">
+      <div className="container">
+        <header className="fc-products-page-heading">
+          <div><span className="section-eyebrow">THE FRESHCART COLLECTION</span><h1>Find your fresh favourites.</h1><p>Browse every product and narrow your search with our shop filters.</p></div>
+          <div className="fc-products-total"><strong>{filteredProducts.length}</strong><span>products found</span></div>
+        </header>
 
-    </Helmet>
-    <div  className='container py-5'>
-
-    <div className="row g-0 mb-4">
-      <div className="col-md-9 col-sm-12 mb-5">
-        <HomeSlider />
-      </div>
-
-      <div className="col-md-3 col-sm-12">
-        <img style={{ width : "100%" , height : "250px" }}  src={require('../../images/grocery-banner.png')} alt="" />
-        <img style={{ width : "100%" , height : "250px" }} src={require('../../images/grocery-banner-2.jpeg')} alt="" />
-      </div>
-
-    </div>
-
-
-   <CategorySlider />
-
-    <div className="row g-4 mt-5">
-
-
-      {data?.data.data.map((product , index) => {return <div key={index} className="col-md-4  col-lg-3 ">
-        
-            <div className="product position-relative">
-              <Link to={`/productDetails/${product.id}`}>
-
-          <img className='w-100'  src={product.imageCover} alt="product" />
-          <h5 className='main-color'>{product.title.split(" ").slice(0,3).join(" ") }</h5>
-          <h6>{product.category.name}</h6>
-          <div className='d-flex justify-content-between align-items-center'>
-            <p className='mb-0'>{product.price} EGP</p>
-            <span>{product.ratingsAverage} <i className="fa-solid fa-star rateColor"></i></span> 
+        <section className="fc-filter-panel" aria-label="Product filters">
+          <div className="fc-filter-topline"><div><span className="fc-filter-icon"><i className="fa-solid fa-sliders" /></span><span><strong>Find exactly what you need</strong><small>Use the filters to narrow your collection</small></span></div><button type="button" onClick={clearFilters}><i className="fa-solid fa-rotate-left me-1" />Reset filters</button></div>
+          <div className="fc-filter-grid">
+            <label className="fc-filter-field fc-filter-search"><span>Search products</span><div><i className="fa-solid fa-magnifying-glass" /><input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Product, category or brand..." /></div></label>
+            <label className="fc-filter-field"><span>Category</span><select value={categoryId} onChange={e => updateParam('category', e.target.value)}><option value="">All categories</option>{categories.map(category => <option key={category._id} value={category._id}>{category.name}</option>)}</select></label>
+            <label className="fc-filter-field"><span>Brand</span><select value={brandId} onChange={e => updateParam('brand', e.target.value)}><option value="">All brands</option>{brands.map(brand => <option key={brand._id} value={brand._id}>{brand.name}</option>)}</select></label>
+            <div className="fc-filter-field"><span>Price range <small>(EGP)</small></span><div className="fc-price-range"><input type="number" min="0" value={minPrice} onChange={e => setMinPrice(e.target.value)} placeholder="Min" aria-label="Minimum price" /><span>—</span><input type="number" min="0" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder="Max" aria-label="Maximum price" /></div></div>
+            <label className="fc-filter-field"><span>Customer rating</span><select value={minRating} onChange={e => setMinRating(e.target.value)}><option value="0">Any rating</option><option value="3">3 stars & up</option><option value="4">4 stars & up</option><option value="4.5">4.5 stars & up</option></select></label>
+            <label className="fc-filter-field"><span>Sort products</span><select value={sortBy} onChange={e => setSortBy(e.target.value)}><option value="recommended">Recommended</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="rating">Top rated</option><option value="name">Name: A to Z</option></select></label>
           </div>
+          {(categoryId || brandId) && <div className="fc-active-filters"><span>Active filters:</span>{categoryId && <button type="button" onClick={() => updateParam('category', '')}>{categories.find(item => item._id === categoryId)?.name || 'Category'} <i className="fa-solid fa-xmark" /></button>}{brandId && <button type="button" onClick={() => updateParam('brand', '')}>{brands.find(item => item._id === brandId)?.name || 'Brand'} <i className="fa-solid fa-xmark" /></button>}</div>}
+        </section>
 
-              </Link>
-
-              <button onClick={()=> addProduct(product.id)} className='mt-2   w-100 main-bg-color p-1 rounded-1 border-0 text-white'>+ ADD To Cart</button>
-              <button style={{right:"20px" , backgroundColor:"transparent" , color: wishlistStatus[product.id]? "red" : "black"}} onClick={()=> addToWishlist(product.id)} className='mt-2   p-1 rounded-1 border-0  position-absolute top-0 '><i class="fa-solid fa-heart"></i></button>
-
-             </div>
-        
-      </div> })}
-
-
-    </div>
-  </div> 
-</>
+        <div className="fc-products-results-bar"><span>Showing <strong>{visibleProducts.length}</strong> of <strong>{filteredProducts.length}</strong> products</span><Link to="/" className="fc-back-home"><i className="fa-solid fa-arrow-left me-2" />Back to home</Link></div>
+        <div className="row g-4">
+          {visibleProducts.map(product => <div key={product.id} className="col-6 col-md-4 col-lg-3">
+            <article className="fc-product-card">
+              <div className="fc-product-image-wrap">
+                <Link to={`/productDetails/${product.id}`}><img className="fc-product-image" src={product.imageCover} alt={product.title} loading="lazy" /></Link>
+                <button type="button" aria-label={wishlistStatus[product.id] ? 'Remove from wishlist' : 'Add to wishlist'} onClick={() => toggleWishlist(product.id)} className={`fc-wishlist-btn ${wishlistStatus[product.id] ? 'is-active' : ''}`}><i className={wishlistStatus[product.id] ? 'fa-solid fa-heart' : 'fa-regular fa-heart'} /></button>
+                <span className="fc-product-tag">Fresh pick</span>
+              </div>
+              <div className="fc-product-info">
+                <span className="fc-product-category">{product.category?.name}</span>
+                <Link to={`/productDetails/${product.id}`}><h3 className="fc-product-title">{product.title.split(' ').slice(0, 5).join(' ')}</h3></Link>
+                <div className="d-flex justify-content-between align-items-center mb-3"><strong className="fc-product-price">{product.price} <small>EGP</small></strong><span className="fc-rating"><i className="fa-solid fa-star" /> {product.ratingsAverage}</span></div>
+                <button onClick={() => addProduct(product.id)} className="fc-add-btn"><i className="fa-solid fa-plus me-2" />Add to cart</button>
+              </div>
+            </article>
+          </div>)}
+        </div>
+        {filteredProducts.length === 0 && <div className="fc-empty mt-4"><i className="fa-solid fa-filter mb-3" /><h4>No products match these filters</h4><p>Try changing your search or clearing some filters.</p><button type="button" onClick={clearFilters} className="fc-primary-btn">Clear filters</button></div>}
+        {filteredProducts.length > INITIAL_PRODUCT_LIMIT && <div className="fc-show-all-wrap"><button type="button" className="fc-show-all-btn" onClick={() => setShowAll(value => !value)}>{showAll ? 'Show fewer products' : `Show more products (${filteredProducts.length - INITIAL_PRODUCT_LIMIT} more)`} <i className={showAll ? 'fa-solid fa-chevron-up ms-2' : 'fa-solid fa-arrow-down ms-2'} /></button></div>}
+      </div>
+    </main>
+  </>
 }

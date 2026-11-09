@@ -1,191 +1,57 @@
-import axios from 'axios';
+import axios from 'axios'
 import jwtDecode from 'jwt-decode'
 import React, { useEffect, useState } from 'react'
-import { ThreeDots } from 'react-loader-spinner';
-import './order.module.css'
-import { Helmet } from 'react-helmet';
+import { ThreeDots } from 'react-loader-spinner'
+import { Helmet } from 'react-helmet'
+import { Link } from 'react-router-dom'
+
 export default function AllOrders() {
+  const [userAllOrders, setUserAllOrders] = useState(null)
+  const [loadError, setLoadError] = useState(false)
 
-
-   
-
-    const [userAllOrders, setUserAllOrders] = useState(null)
-
-    useEffect(function(){
-
-    const user = jwtDecode(localStorage.getItem('tkn'))
-
-
-        getUserOrders(user.id)
-
-    },[])
-
-
-     async function getUserOrders(id){
-
-        try {
-            
-        const {data} = await axios.get(`https://ecommerce.routemisr.com/api/v1/orders/user/${id}`)
-        
-        console.log(data);
-
-        setUserAllOrders(data)
-
-        } catch (error) {
-            console.log("error" , error);
-        }
-
-
+  useEffect(() => {
+    try {
+      const token = localStorage.getItem('tkn')
+      if (!token) { setLoadError(true); setUserAllOrders([]); return }
+      const user = jwtDecode(token)
+      axios.get(`https://ecommerce.routemisr.com/api/v1/orders/user/${user.id}`)
+        .then(({ data }) => setUserAllOrders(data || []))
+        .catch(error => { console.error("Unable to load orders", error); setLoadError(true); setUserAllOrders([]) })
+    } catch (error) {
+      console.error("Unable to read user session", error)
+      setLoadError(true)
+      setUserAllOrders([])
     }
+  }, [])
 
-    if(userAllOrders === null){
-
-     return <div className='vh-100 d-flex justify-content-center align-items-center'>
-
-  <ThreeDots
-height="80" 
-width="80" 
-radius="9"
-color="#4fa94d" 
-ariaLabel="three-dots-loading"
-wrapperStyle={{}}
-wrapperClassName=""
-visible={true}
- />
-
-        </div>
-    }
+  if (userAllOrders === null) return <div className="fc-loading"><ThreeDots height="70" width="70" color="#16834a" visible /></div>
 
   return <>
-    <Helmet>
-      <title>All orders</title>
-    <link rel="apple-touch-icon" href="../src/images/apple-touch-icon.png" />
-        <link rel="icon" href="../src/images/favicon.ico" />
-
-    </Helmet>
-  
-  <div className="container my-5 py-5 overflow-x-auto">
-
-    
-
-  <table>
-    <thead>
-      <tr>
-        <th style={{width:"15%"}}>Product image</th>
-        <th>Title</th>
-        <th>Price</th>
-        <th>Count</th>
-        <th>Total price</th>
-        <th>Phone</th>
-        <th>City</th>
-        <th>User email</th>
-        <th>Payment method</th>
-
-      </tr>
-    </thead>
-    {userAllOrders.map(function(order , index){
-        console.log(order);
-
-        
-        return <tbody key={index}>
-
-            {order.cartItems.map(function(item , idx){
-              console.log(item);
-                return <tr key={idx}>
-        <td><img className='w-50' src={item.product.imageCover} alt="" /></td>
-        <td className='fw-bold'>{item.product.title.split(" ").slice(0,3).join(" ")}</td>
-        <td className='fw-bold'>{item.price} EGP</td>
-        <td className='fw-bold'>{item.count}</td>
-        <td className='fw-bold'>{item.price * item.count} EGP</td>
-        <td className='fw-bold'>{order.shippingAddress.phone} </td>
-        <td className='fw-bold'>{order.shippingAddress.city} </td>
-        <td className='fw-bold'>{order.user.email} </td>
-        <td className='fw-bold text-primary'>{order.paymentMethodType} </td>
-
-      </tr>
-            })}
-      
-    </tbody>
-        })}
-    
-  </table>
-
-
-
-
-
-
-{/* <table class="table">
-  <thead>
-    <tr>
-      
-      <th scope="col">Product image</th>
-      <th scope="col">Title</th>
-      <th scope="col">Price</th>
-      <th scope="col">Count</th>
-      <th scope="col">Total price</th>
-      <th scope="col">Phone</th>
-      <th scope="col">City</th>
-      <th scope="col">User email</th>
-      <th scope="col">Payment method</th>
-    </tr>
-  </thead>
-
-        {userAllOrders.map(function(order , index){
-        console.log(order);
-
-        
-        return <tbody key={index}>
-
-            {order.cartItems.map(function(item , idx){
-              console.log(item);
-                return <tr key={idx}>
-        
-        <td><img className='w-50' src={item.product.imageCover} alt="" /></td>
-        <td className='fw-bold'>{item.product.title.split(" ").slice(0,3).join(" ")}</td>
-        <td className='fw-bold'>{item.price} EGP</td>
-        <td className='fw-bold'>{item.count}</td>
-        <td className='fw-bold'>{item.price * item.count} EGP</td>
-        <td className='fw-bold'>{order.shippingAddress.phone} </td>
-        <td className='fw-bold'>{order.shippingAddress.city} </td>
-        <td className='fw-bold'>{order.user.email} </td>
-        <td className='fw-bold text-primary'>{order.paymentMethodType} </td>
-
-      </tr>
-            })}
-      
-    </tbody>
-        })}
-    
-  </table> */}
-
-
-
-
-
-
-
-  </div>
-  
-
-
-
-
-  {/* ==================================== */}
-
-
-  
-
-  
-
-
-
-
-
-</>
-
-  
-  
-  
-  
+    <Helmet><title>My orders | FreshCart</title></Helmet>
+    <main className="container fc-orders-page">
+      <div className="fc-orders-heading"><div><span className="section-eyebrow">Your FreshCart activity</span><h1 className="section-title">My orders</h1><p>All your purchases, together in one place.</p></div><Link to="/products" className="fc-primary-btn">Continue shopping <i className="fa-solid fa-arrow-right ms-2" /></Link></div>
+      {loadError && <div className="fc-empty"><h3>We couldn't load your orders</h3><p>Please refresh the page and try again.</p></div>}
+      {!loadError && userAllOrders.length === 0 && <div className="fc-empty"><div className="fc-empty-icon"><i className="fa-solid fa-box-open" /></div><h3>No orders yet</h3><p>Your next favourite find is waiting.</p><Link to="/products" className="fc-primary-btn">Start shopping</Link></div>}
+      {!loadError && userAllOrders.length > 0 && <div className="fc-orders-list">
+        {userAllOrders.map((order, index) => <article className="fc-order-card" key={order._id || index}>
+          <div className="fc-order-card-head">
+            <div><span className="fc-order-label">Order #{String(order._id || index).slice(-8).toUpperCase()}</span><strong>{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Order placed'}</strong></div>
+            <span className={`fc-order-status ${order.isDelivered ? 'is-complete' : ''}`}>{order.isDelivered ? 'Delivered' : 'Processing'}</span>
+          </div>
+          <div className="fc-order-items">
+            {(order.cartItems || []).map((item, itemIndex) => <div className="fc-order-item" key={item._id || item.product?._id || itemIndex}>
+              <img src={item.product?.imageCover} alt={item.product?.title || 'Product'} />
+              <div className="fc-order-item-copy"><strong>{item.product?.title || 'Product'}</strong><span>Quantity: {item.count}</span></div>
+              <strong className="fc-order-item-price">{(item.price * item.count).toLocaleString()} EGP</strong>
+            </div>)}
+          </div>
+          <div className="fc-order-card-foot">
+            <div><span>Payment</span><strong>{order.paymentMethodType === 'cash' ? 'Cash on delivery' : order.paymentMethodType || '—'}</strong></div>
+            <div><span>Deliver to</span><strong>{order.shippingAddress?.city || '—'}</strong></div>
+            <div><span>Order total</span><strong className="fc-order-total">{(order.totalOrderPrice || order.cartItems?.reduce((sum, item) => sum + item.price * item.count, 0) || 0).toLocaleString()} EGP</strong></div>
+          </div>
+        </article>)}
+      </div>}
+    </main>
+  </>
 }

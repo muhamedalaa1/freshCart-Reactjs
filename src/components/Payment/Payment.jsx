@@ -1,146 +1,98 @@
 import axios from 'axios'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { cartContext } from '../../context/cartContext'
 import { toast } from 'react-toastify'
 import { Helmet } from 'react-helmet'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Payment() {
+  const { cartId, totalCartPrice, setTotalCartPrice, setCartProducts, setNumOfCartItems } = useContext(cartContext)
+  const [shipping, setShipping] = useState({ city: '', phone: '', details: '' })
+  const [submitting, setSubmitting] = useState(false)
+  const navigate = useNavigate()
 
-   const {cartId,setTotalCartPrice,setCartProducts,setNumOfCartItems} = useContext(cartContext)
+  function updateField(event) {
+    setShipping(previous => ({ ...previous, [event.target.name]: event.target.value }))
+  }
 
-   async function confirmCashPayment(){
+  function validateShipping() {
+    if (!shipping.city.trim() || !shipping.phone.trim() || !shipping.details.trim()) {
+      toast.warning("Please complete your city, phone number and address details.")
+      return false
+    }
+    if (!/^[+0-9\s()-]{8,20}$/.test(shipping.phone.trim())) {
+      toast.warning("Please enter a valid phone number.")
+      return false
+    }
+    return true
+  }
 
-    let city = document.getElementById('city')
-    let phone = document.getElementById('phone')
-    let details = document.getElementById('details')
-
-    
-
+  async function confirmCashPayment() {
+    if (!validateShipping()) return
+    setSubmitting(true)
     try {
+      const { data } = await axios.post(`https://ecommerce.routemisr.com/api/v1/orders/${cartId}`, {
+        shippingAddress: { details: shipping.details, phone: shipping.phone, city: shipping.city }
+      }, { headers: { token: localStorage.getItem('tkn') } })
 
-
-
-    const {data} = await axios.post(`https://ecommerce.routemisr.com/api/v1/orders/${cartId}`,{
-    "shippingAddress":{
-        "details":details.value ,
-        "phone": phone.value,
-        "city": city.value
-        }
-} ,{
-    headers:{token:localStorage.getItem('tkn')}
-})
-
-    console.log(data);
-
-    if(data.status === "success"){
-
-
-        setTotalCartPrice(0);
-        setCartProducts([]);
-        setNumOfCartItems(0);
-
-        toast.success("Order successfully added", {
-position: "top-right",
-autoClose: 4000,
-hideProgressBar: true,
-closeOnClick: true,
-pauseOnHover: true,
-draggable: true,
-progress: undefined,
-theme: "light",
-});
+      if (data.status === "success") {
+        setTotalCartPrice(0)
+        setCartProducts([])
+        setNumOfCartItems(0)
+        toast.success("Your cash order has been confirmed!")
+        navigate("/allorders")
+      } else {
+        toast.error(data.message || "We couldn't confirm your order.")
       }
-      else{
-         toast.error("error happened" , {
-position: "top-right",
-autoClose: 3500,
-hideProgressBar: true,
-closeOnClick: true,
-pauseOnHover: true,
-draggable: true,
-progress: undefined,
-theme: "light",
-});
-      }
-
     } catch (error) {
-        console.log("error" , error);
+      toast.error(error.response?.data?.message || "Payment couldn't be confirmed. Please try again.")
+    } finally {
+      setSubmitting(false)
     }
-  
+  }
 
-
-
-
+  async function confirmOnlinePayment() {
+    if (!validateShipping()) return
+    setSubmitting(true)
+    try {
+      const { data } = await axios.post(`https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=${encodeURIComponent(window.location.origin)}`, {
+        shippingAddress: { details: shipping.details, phone: shipping.phone, city: shipping.city }
+      }, { headers: { token: localStorage.getItem('tkn') } })
+      window.location.assign(data.session.url)
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Couldn't start online payment. Please try again.")
+      setSubmitting(false)
     }
-
-
-    async function confirmOnlinePayment(){
-
-        let city = document.getElementById('city')
-        let phone = document.getElementById('phone')
-        let details = document.getElementById('details')
-
-        try {
-            
-            
-            const {data} = await axios.post(`https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=http://localhost:3000`,{
-        "shippingAddress":{
-            "details":details.value ,
-            "phone":phone.value ,
-            "city": city.value
-        }
-},{
-    headers:{token:localStorage.getItem('tkn')}
-})
-
-    window.open(data.session.url , "_blank")
-
-        } 
-        catch (error) {
-            console.log("error" , error);
-        }
-
-    }
-
-
-
+  }
 
   return <>
-
-    <Helmet>
-      <title>Payment</title>
-   <link rel="apple-touch-icon" href="../src/images/apple-touch-icon.png" />
-        <link rel="icon" href="../src/images/favicon.ico" />
-
-    </Helmet>
-
-    <div className="container vh-100 d-flex justify-content-center align-items-center ">
-
-        <form className='w-100'>
-
-            {/* selection */}
-
-        
-        <input className='form-control mb-3' placeholder='city' type="text" id="city" />
-        
-
-        <input className='form-control mb-3' placeholder='phone' type="tel" id="phone" />
-
-        <textarea className='mb-3 form-control w-100 rounded-2'   id="details" placeholder='details'></textarea>
-
-            {/* selection */}
-
-        <button onClick={confirmCashPayment} type='button' className='btn btn-primary'>Confirm cash payment </button>
-        <button onClick={confirmOnlinePayment}  type='button' className='ms-2 btn text-white' style={{backgroundColor:"#dc143c"}}>Confirm online payment </button>
-
-        </form>
-
-    </div>
-  
-  
-  
+    <Helmet><title>Checkout | FreshCart</title></Helmet>
+    <main className="container fc-checkout-page">
+      <div className="fc-checkout-heading"><span className="section-eyebrow">Almost there</span><h1 className="section-title">Delivery & payment</h1><p>Where should we deliver your basket?</p></div>
+      <div className="row g-4 align-items-start">
+        <div className="col-lg-7">
+          <section className="fc-checkout-card">
+            <div className="fc-checkout-card-title"><span className="fc-checkout-step">1</span><div><h2>Delivery address</h2><p>Enter the details for your delivery.</p></div></div>
+            <div className="fc-form-grid">
+              <label className="fc-form-field"><span>City</span><input name="city" value={shipping.city} onChange={updateField} placeholder="e.g. Mansoura" autoComplete="address-level2" required /></label>
+              <label className="fc-form-field"><span>Phone number</span><input name="phone" type="tel" value={shipping.phone} onChange={updateField} placeholder="Your contact number" autoComplete="tel" required /></label>
+              <label className="fc-form-field fc-form-field-full"><span>Full address & delivery notes</span><textarea name="details" value={shipping.details} onChange={updateField} placeholder="Street, building, apartment and any helpful directions..." rows="4" required /></label>
+            </div>
+          </section>
+        </div>
+        <div className="col-lg-5">
+          <aside className="fc-checkout-card fc-checkout-summary">
+            <div className="fc-checkout-card-title"><span className="fc-checkout-step">2</span><div><h2>Order summary</h2><p>Review your basket total.</p></div></div>
+            <div className="fc-checkout-total-row"><span>Items total</span><strong>{(totalCartPrice || 0).toLocaleString()} EGP</strong></div>
+            <div className="fc-checkout-total-row"><span>Delivery</span><strong>Calculated on delivery</strong></div>
+            <div className="fc-checkout-grand-total"><span>Total</span><strong>{(totalCartPrice || 0).toLocaleString()} EGP</strong></div>
+            <button type="button" onClick={confirmCashPayment} disabled={submitting} className="fc-checkout-cash"><i className="fa-solid fa-money-bill-wave me-2" />{submitting ? 'Please wait...' : 'Confirm cash on delivery'}</button>
+            <button type="button" onClick={confirmOnlinePayment} disabled={submitting} className="fc-checkout-online"><i className="fa-regular fa-credit-card me-2" />Pay online</button>
+            <Link to="/cart" className="fc-back-cart"><i className="fa-solid fa-arrow-left me-2" />Back to cart</Link>
+            <p className="fc-checkout-secure"><i className="fa-solid fa-lock me-1" /> Your details are used only to process this order.</p>
+          </aside>
+        </div>
+      </div>
+    </main>
   </>
 }
-
-
-
