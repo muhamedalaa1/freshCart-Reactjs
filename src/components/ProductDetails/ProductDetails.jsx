@@ -18,8 +18,8 @@ export default function ProductDetails() {
   async function addProduct(productId) {
     setProductDetailsLoader(true)
     const res = await addProductToCart(productId)
-    if (res?.status === "success") toast.success("Added to your cart")
-    else toast.error(res?.message || "Couldn't add this product to your cart")
+    if (res?.status === 'success') toast.success('Added to your cart', { containerId: 'freshcart-notifications' })
+    else toast.error(res?.message || "Couldn't add this product to your cart", { containerId: 'freshcart-notifications' })
     setProductDetailsLoader(false)
   }
 
@@ -28,8 +28,8 @@ export default function ProductDetails() {
     const res = wishlistStatus[productId]
       ? await removeWishItem(productId)
       : await addProductToWishlist(productId)
-    if (res?.status === "success") toast.success(wishlistStatus[productId] ? "Removed from your wishlist" : "Added to your wishlist")
-    else toast.error(res?.message || "Couldn't update your wishlist")
+    if (res?.status === 'success') toast.success(wishlistStatus[productId] ? 'Removed from your wishlist' : 'Added to your wishlist', { containerId: 'freshcart-notifications' })
+    else toast.error(res?.message || "Couldn't update your wishlist", { containerId: 'freshcart-notifications' })
     setProductDetailsWishLoader(false)
   }
 
