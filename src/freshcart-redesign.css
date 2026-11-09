@@ -241,3 +241,28 @@
   .fc-order-card-foot{gap:12px}
   .fc-order-card-foot strong{font-size:.74rem}
 }
+
+
+/* Toast notifications must float above the page, never flow below the footer */
+.Toastify__toast-container{
+  position:fixed!important;
+  z-index:100000!important;
+  top:1rem!important;
+  right:1rem!important;
+  bottom:auto!important;
+  width:min(380px,calc(100vw - 2rem))!important;
+  padding:0!important;
+}
+.Toastify__toast{
+  position:relative;
+  border-radius:14px!important;
+  box-shadow:0 12px 35px rgba(20,40,28,.18)!important;
+  font-family:'DM Sans','Manrope',sans-serif!important;
+  font-size:.88rem!important;
+  font-weight:600!important;
+  min-height:58px!important;
+}
+.Toastify__toast-body{padding:8px 4px!important}
+@media(max-width:480px){
+  .Toastify__toast-container{top:.65rem!important;right:.65rem!important;left:.65rem!important;width:auto!important}
+}
