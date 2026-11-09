@@ -29,7 +29,7 @@ export default function Navbar() {
       </div>
       <nav className="navbar navbar-expand-lg fc-navbar">
         <div className="container">
-          <Link className="navbar-brand fc-brand" to={token ? "/Products" : "/Login"}>
+          <Link className="navbar-brand fc-brand" to={token ? "/" : "/Login"}>
             <img src={logoImg} alt="FreshCart" />
           </Link>
           <button className="navbar-toggler fc-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#freshCartNav" aria-controls="freshCartNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +37,8 @@ export default function Navbar() {
           </button>
           <div className="collapse navbar-collapse" id="freshCartNav">
             {token && <ul className="navbar-nav mx-lg-auto align-items-lg-center gap-lg-2 py-3 py-lg-0">
-              <li className="nav-item"><NavLink className={linkClass} to="/Products">Shop</NavLink></li>
+              <li className="nav-item"><NavLink end className={linkClass} to="/">Home</NavLink></li>
+              <li className="nav-item"><NavLink className={linkClass} to="/Products">Products</NavLink></li>
               <li className="nav-item"><NavLink className={linkClass} to="/Categories">Categories</NavLink></li>
               <li className="nav-item"><NavLink className={linkClass} to="/Brands">Brands</NavLink></li>
               <li className="nav-item"><NavLink className={linkClass} to="/allorders">My orders</NavLink></li>
