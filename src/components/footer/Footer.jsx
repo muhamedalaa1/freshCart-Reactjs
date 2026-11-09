@@ -3,7 +3,6 @@ import paypal from "../../images/footer/paypal.svg"
 import americanExpress from "../../images/footer/american-express.svg"
 import mastercard from "../../images/footer/mastercard.svg"
 import amazonPay from "../../images/footer/amazon.svg"
-import googlePlay from "../../images/footer/google-play.svg"
 
 export default function Footer() {
   return <footer className="fc-footer">
