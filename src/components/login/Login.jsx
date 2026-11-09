@@ -23,7 +23,7 @@ export default function Login() {
         setToken(data.token);
         localStorage.setItem('tkn', data.token);
         setSuccess('Welcome back! You are being signed in.');
-        setTimeout(() => navigate('/products'), 900);
+        setTimeout(() => navigate('/', { replace: true }), 900);
       }
     } catch (err) {
       setFail(err?.response?.data?.message || 'We could not sign you in. Please check your details and try again.');
