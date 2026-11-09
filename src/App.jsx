@@ -14,6 +14,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import ProductDetails from './components/ProductDetails/ProductDetails';
 import { CartContextProvider } from './context/cartContext';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Cart from './components/Cart/Cart';
 import Payment from './components/Payment/Payment';
 import AllOrders from './components/AllOrders/AllOrders';
@@ -86,7 +87,7 @@ function App() {
       </WishlistContextProvider>
 
       
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={3000} newestOnTop closeOnClick pauseOnHover theme="light" />
   </QueryClientProvider>
   
   <Offline>
