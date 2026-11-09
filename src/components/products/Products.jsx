@@ -155,8 +155,8 @@ export default function Products() {
             </article>
           </div>)}
         </div>
-        {filteredProducts.length === 0 && <div className="fc-empty mt-4"><i className="fa-solid fa-filter mb-3" /><h4>No products match these filters</h4><p>Try changing your search or clearing some filters.</p><button type="button" onClick={clearFilters} className="fc-primary-btn">Clear filters</button></div>
-        {filteredProducts.length > INITIAL_PRODUCT_LIMIT && <div className="fc-show-all-wrap"><button type="button" className="fc-show-all-btn" onClick={() => setShowAll(value => !value)}>{showAll ? 'Show fewer products' : `Show more products (${filteredProducts.length - INITIAL_PRODUCT_LIMIT} more)`} <i className={showAll ? 'fa-solid fa-chevron-up ms-2' : 'fa-solid fa-arrow-down ms-2'} /></button></div>}}
+        {filteredProducts.length === 0 && <div className="fc-empty mt-4"><i className="fa-solid fa-filter mb-3" /><h4>No products match these filters</h4><p>Try changing your search or clearing some filters.</p><button type="button" onClick={clearFilters} className="fc-primary-btn">Clear filters</button></div>}
+        {filteredProducts.length > INITIAL_PRODUCT_LIMIT && <div className="fc-show-all-wrap"><button type="button" className="fc-show-all-btn" onClick={() => setShowAll(value => !value)}>{showAll ? 'Show fewer products' : `Show more products (${filteredProducts.length - INITIAL_PRODUCT_LIMIT} more)`} <i className={showAll ? 'fa-solid fa-chevron-up ms-2' : 'fa-solid fa-arrow-down ms-2'} /></button></div>}
       </div>
     </main>
   </>
