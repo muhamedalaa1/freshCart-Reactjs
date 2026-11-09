@@ -66,7 +66,7 @@ export default function Products() {
           <CategorySlider />
         </section>
 
-        <section className="fc-products-section">
+        <section id="fresh-products" className="fc-products-section">
           <div className="fc-products-heading">
             <div><span className="section-eyebrow">Picked for your table</span><h2 className="section-title mb-1">Popular right now</h2><p className="text-muted mb-0">Fresh finds and everyday favourites, all in one place.</p></div>
             <div className="fc-search"><i className="fa-solid fa-magnifying-glass" /><input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search products..." aria-label="Search products" /></div>
