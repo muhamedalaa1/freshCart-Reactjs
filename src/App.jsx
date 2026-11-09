@@ -2,6 +2,7 @@ import { RouterProvider, createBrowserRouter, createHashRouter } from 'react-rou
 import './App.css';
 import Layout from './components/layout/Layout';
 import Products from './components/products/Products';
+import Home from './components/home/Home';
 import Register from './components/register/Register';
 import Login from './components/login/Login';
 import Categories from './components/categories/Categories';
@@ -32,7 +33,7 @@ const myRouter = createHashRouter([
 
 
 {path : "" , element : <Layout /> , children:[
-{index:true ,element: <ProtectedRoute><Products /></ProtectedRoute>},
+{index:true ,element: <ProtectedRoute><Home /></ProtectedRoute>},
 {path:"products" ,element: <ProtectedRoute><Products /></ProtectedRoute>},
 
 {path:"cart" ,element: <ProtectedRoute><Cart /></ProtectedRoute>},
