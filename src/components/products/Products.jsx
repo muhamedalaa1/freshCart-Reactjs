@@ -11,6 +11,11 @@ import { Helmet } from 'react-helmet'
 import { wishlistContext } from '../../context/wishlistContext'
 
 const INITIAL_PRODUCT_LIMIT = 8
+const notify = {
+  success: message => toast.success(message, { containerId: 'freshcart-notifications' }),
+  error: message => toast.error(message, { containerId: 'freshcart-notifications' }),
+  info: message => toast.info(message, { containerId: 'freshcart-notifications' }),
+}
 
 export default function Products() {
   const { addProductToCart } = useContext(cartContext)
@@ -24,28 +29,36 @@ export default function Products() {
   useEffect(() => setShowAll(false), [searchTerm, categoryId, brandId])
 
   async function addProduct(id) {
-    const res = await addProductToCart(id)
-    if (res?.status === "success") toast.success("Added to your cart")
-    else toast.error(res?.message || "Couldn't add this product to your cart")
+    try {
+      const res = await addProductToCart(id)
+      if (res?.status === 'success') notify.success('Added to your cart')
+      else notify.error(res?.message || "Couldn't add this product to your cart")
+    } catch (error) {
+      notify.error(error?.response?.data?.message || "Couldn't add this product to your cart")
+    }
   }
 
   async function toggleWishlist(id) {
-    if (wishlistStatus[id]) {
-      const res = await removeWishItem(id)
-      if (res?.status === "success") toast.info("Removed from your wishlist")
-      else toast.error(res?.message || "Couldn't remove this product")
-      return
+    try {
+      if (wishlistStatus[id]) {
+        const res = await removeWishItem(id)
+        if (res?.status === 'success') notify.info('Removed from your wishlist')
+        else notify.error(res?.message || "Couldn't remove this product")
+        return
+      }
+      const res = await addProductToWishlist(id)
+      if (res?.status === 'success') notify.success('Added to your wishlist')
+      else notify.error(res?.message || "Couldn't add this product")
+    } catch (error) {
+      notify.error(error?.response?.data?.message || "Couldn't update your wishlist")
     }
-    const res = await addProductToWishlist(id)
-    if (res?.status === "success") toast.success("Added to your wishlist")
-    else toast.error(res?.message || "Couldn't add this product")
   }
 
   function getAllProducts() {
-    return axios.get("https://ecommerce.routemisr.com/api/v1/products")
+    return axios.get('https://ecommerce.routemisr.com/api/v1/products')
   }
 
-  const { data, isLoading, isError } = useQuery("allProduct", getAllProducts)
+  const { data, isLoading, isError } = useQuery('allProduct', getAllProducts)
   const products = data?.data?.data || []
   const filteredProducts = useMemo(() => products.filter(product => {
     const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -78,7 +91,7 @@ export default function Products() {
         </>}
         <section id="fresh-products" className="fc-products-section">
           <div className="fc-products-heading">
-            <div><span className="section-eyebrow">Picked for your table</span><h2 className="section-title mb-1">{categoryId ? "Category products" : brandId ? "Brand products" : "Popular right now"}</h2><p className="text-muted mb-0">{filteredProducts.length} products to explore.</p></div>
+            <div><span className="section-eyebrow">Picked for your table</span><h2 className="section-title mb-1">{categoryId ? 'Category products' : brandId ? 'Brand products' : 'Popular right now'}</h2><p className="text-muted mb-0">{filteredProducts.length} products to explore.</p></div>
             <div className="fc-search"><i className="fa-solid fa-magnifying-glass" /><input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search products..." aria-label="Search products" /></div>
           </div>
           <div className="row g-4">
@@ -86,12 +99,12 @@ export default function Products() {
               <article className="fc-product-card">
                 <div className="fc-product-image-wrap">
                   <Link to={`/productDetails/${product.id}`}><img className="fc-product-image" src={product.imageCover} alt={product.title} loading="lazy" /></Link>
-                  <button type="button" aria-label={wishlistStatus[product.id] ? "Remove from wishlist" : "Add to wishlist"} onClick={() => toggleWishlist(product.id)} className={`fc-wishlist-btn ${wishlistStatus[product.id] ? 'is-active' : ''}`}><i className={wishlistStatus[product.id] ? "fa-solid fa-heart" : "fa-regular fa-heart"} /></button>
+                  <button type="button" aria-label={wishlistStatus[product.id] ? 'Remove from wishlist' : 'Add to wishlist'} onClick={() => toggleWishlist(product.id)} className={`fc-wishlist-btn ${wishlistStatus[product.id] ? 'is-active' : ''}`}><i className={wishlistStatus[product.id] ? 'fa-solid fa-heart' : 'fa-regular fa-heart'} /></button>
                   <span className="fc-product-tag">Fresh pick</span>
                 </div>
                 <div className="fc-product-info">
                   <span className="fc-product-category">{product.category?.name}</span>
-                  <Link to={`/productDetails/${product.id}`}><h3 className="fc-product-title">{product.title.split(" ").slice(0, 5).join(" ")}</h3></Link>
+                  <Link to={`/productDetails/${product.id}`}><h3 className="fc-product-title">{product.title.split(' ').slice(0, 5).join(' ')}</h3></Link>
                   <div className="d-flex justify-content-between align-items-center mb-3"><strong className="fc-product-price">{product.price} <small>EGP</small></strong><span className="fc-rating"><i className="fa-solid fa-star" /> {product.ratingsAverage}</span></div>
                   <button onClick={() => addProduct(product.id)} className="fc-add-btn"><i className="fa-solid fa-plus me-2" />Add to cart</button>
                 </div>
@@ -99,7 +112,7 @@ export default function Products() {
             </div>)}
           </div>
           {filteredProducts.length === 0 && <div className="fc-empty mt-4"><i className="fa-solid fa-magnifying-glass mb-3" /><h4>No products found</h4><p>Try another search term or browse the full shop.</p><Link to="/products" className="fc-primary-btn">Clear filters</Link></div>}
-          {filteredProducts.length > INITIAL_PRODUCT_LIMIT && <div className="fc-show-all-wrap"><button type="button" className="fc-show-all-btn" onClick={() => setShowAll(value => !value)}>{showAll ? "Show fewer products" : `Show all ${filteredProducts.length} products`} <i className={showAll ? "fa-solid fa-chevron-up ms-2" : "fa-solid fa-arrow-right ms-2"} /></button></div>}
+          {filteredProducts.length > INITIAL_PRODUCT_LIMIT && <div className="fc-show-all-wrap"><button type="button" className="fc-show-all-btn" onClick={() => setShowAll(value => !value)}>{showAll ? 'Show fewer products' : `Show all ${filteredProducts.length} products`} <i className={showAll ? 'fa-solid fa-chevron-up ms-2' : 'fa-solid fa-arrow-right ms-2'} /></button></div>}
         </section>
       </div>
     </main>
